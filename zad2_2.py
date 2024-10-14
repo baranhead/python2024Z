@@ -7,7 +7,7 @@ def tekstPowitania(jezyk):
     dict["it"] = "Buongiorno!"
 
     if jezyk not in dict:
-        print(f"\Nie znam jezyka {jezyk}.")
+        print(f"\nNie znam jezyka {jezyk}.")
     else:
         print(f"\n{dict[jezyk]}")
 
