@@ -4,8 +4,7 @@ import matplotlib.pyplot as plt
 from unittest.mock import MagicMock, patch
 from bs4 import BeautifulSoup
 from pandas.testing import assert_frame_equal
-from drugbank import create_df_info, extract_drugs, draw_group_pie_chart, create_df_products, draw_hist_interactions
-from drug_creator import tags
+from drugbank import create_df_info, extract_drugs, draw_group_pie_chart, create_df_products, draw_hist_interactions, analyze_gene
 
 #testing extracting drugs
 @pytest.mark.parametrize("path, expected_result", [
@@ -25,8 +24,8 @@ def test_extract_drugs_file_not_found(path, expected_result):
 ])
 def test_draw_group_pie_chart(approved, withdrawn, experimental, vet_approved):
     with patch("matplotlib.pyplot.pie", return_value=(["color1", "color2", "color3", "color4"], None, None)) as mock_pie, \
-         patch("matplotlib.pyplot.legend") as mock_legend, \
-         patch("matplotlib.pyplot.show"):
+        patch("matplotlib.pyplot.legend") as mock_legend, \
+        patch("matplotlib.pyplot.show"):
 
         draw_group_pie_chart(approved, withdrawn, experimental, vet_approved)
 
@@ -152,9 +151,20 @@ def test_create_df_products(sample_df_products):
 
     assert_frame_equal(df_result, expected_df, check_dtype=False)
 
-#checking for unique tags 
-def check__tags():
-    assert len(tags) == len(set(tags))
-    assert 'drugbank-id' not in tags
+#checking analyzing a gene
+@pytest.fixture
+def sample_analyze_drug():
+    xml_data = """
+    <drug type="small-molecule">
+        <drugbank-id primary="true">DB0001</drugbank-id>
+        <name>Thiocodin</name>
+    </drug>
+    """
+    soup = BeautifulSoup(xml_data, "xml")
+    return soup.find("drug")
+
+def test_analyze_gene_no_polypeptide(sample_analyze_drug):
+    result = analyze_gene(sample_analyze_drug)
+    assert result is None
 
 

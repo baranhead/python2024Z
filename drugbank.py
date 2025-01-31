@@ -172,7 +172,7 @@ def analyze_gene(drug):
     coding_gene = drug.find('polypeptide')
     if coding_gene == None:
         print('The chosen drug does not contain a polypeptide')
-        return
+        return None
     
     gene_name = drug.find('gene-name').text.strip()
     print(f"Analyzing {gene_name} gene.")
@@ -573,6 +573,8 @@ def create_drug_interactions_df(drug_list):
     #printing the drug interactions dataframe
     #print(drug_interactions_df)
 
+    return drug_interactions_df
+
 def extract_drugs(PATH, NAMES):
     if PATH == 'drugbank_partial_and_generated.xml':
         NAMES = 0
@@ -635,7 +637,7 @@ if __name__ == "__main__":
     create_df_group_draw_chart(drug_list)
 
     #task 10
-    create_drug_interactions_df(drug_list)
+    drug_interactions_df = create_drug_interactions_df(drug_list)
 
     #task 11 - analyzing a single gene
     random.seed(time.time_ns())
